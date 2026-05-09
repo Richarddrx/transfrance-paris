@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSFRANCE - 巴黎出行 · 欧洲导游</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+            color: #1a1a2e;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        :root {
+            --primary: #0f4c81;
+            --primary-dark: #0a3559;
+            --accent: #e63946;
+            --accent-hover: #c92f3c;
+            --gold: #d4a017;
+            --gray-light: #f8f9fa;
+            --gray: #6c757d;
+            --dark: #1a1a2e;
+            --white: #ffffff;
+            --section-padding: 100px 0;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        header.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.12); }
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .logo span.sub { font-weight: 400; font-size: 0.8rem; color: var(--gray); display: block; line-height: 1.2; }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #444;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0; right: 0;
+            height: 2px; background: var(--accent);
+            transform: scaleX(0); transition: transform 0.3s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(230,57,70,0.35); }
+        .btn-outline { background: transparent; color: #fff; border: 2px solid #fff; }
+        .btn-outline:hover { background: #fff; color: var(--primary); transform: translateY(-2px); }
+        .btn-gold { background: var(--gold); color: #fff; }
+        .btn-gold:hover { background: #b89014; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,160,23,0.35); }
+        .btn-success { background: #07c160; color: #fff; }
+        .btn-success:hover { background: #06ad56; transform: translateY(-2px); }
+
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+        .hamburger span { width: 26px; height: 3px; background: var(--dark); border-radius: 3px; transition: all 0.3s; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #0a3559 0%, #0f4c81 50%, #1a6ca8 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 780px; color: #fff; }
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+        .hero h1 span { color: #ff6b6b; }
+        .hero h1 .small { font-size: 1.4rem; font-weight: 400; opacity: 0.9; display: block; margin-top: 8px; }
+        .hero p { font-size: 1.15rem; opacity: 0.92; margin-bottom: 32px; max-width: 580px; }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .hero-stats {
+            display: flex; gap: 48px;
+            margin-top: 50px; padding-top: 32px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .hero-stat h3 { font-size: 2rem; font-weight: 800; }
+        .hero-stat p { font-size: 0.9rem; opacity: 0.7; margin: 0; }
+        .hero-float {
+            position: absolute;
+            right: -20px; bottom: 5%;
+            z-index: 1;
+            opacity: 0.06;
+            font-size: 26rem;
+            color: #fff;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        section { padding: var(--section-padding); }
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 2.2rem; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+        .section-title p { color: var(--gray); max-width: 560px; margin: 0 auto; font-size: 1.05rem; }
+        .section-title .title-bar { width: 50px; height: 4px; background: var(--accent); margin: 14px auto 0; border-radius: 2px; }
+
+        #services { background: var(--white); }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+        }
+        .service-card {
+            background: var(--gray-light);
+            border-radius: 16px;
+            padding: 36px 28px;
+            transition: all 0.4s;
+            border: 1px solid transparent;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 50px rgba(15,76,129,0.1);
+        }
+        .service-icon {
+            width: 60px; height: 60px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 18px;
+        }
+        .service-icon.gold { background: var(--gold); }
+        .service-card h3 { font-size: 1.25rem; margin-bottom: 10px; }
+        .service-card p { color: var(--gray); font-size: 0.95rem; line-height: 1.7; }
+        .service-card .tag {
+            display: inline-block;
+            padding: 3px 12px;
+            background: rgba(15,76,129,0.1);
+            color: var(--primary);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        #about { background: var(--gray-light); }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .about-image {
+            border-radius: 20px;
+            height: 420px;
+            position: relative;
+            overflow: hidden;
+        }
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .about-image .about-badge {
+            position: absolute;
+            bottom: 28px; left: 28px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .about-image .about-badge strong { font-size: 1.4rem; display: block; }
+        .about-content h2 { font-size: 2rem; font-weight: 800; margin-bottom: 16px; }
+        .about-content h2 span { color: var(--accent); }
+        .about-content p { color: var(--gray); margin-bottom: 14px; line-height: 1.8; }
+        .about-features { margin-top: 20px; display: grid; gap: 10px; }
+        .about-feature { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .about-feature .check { color: #07c160; font-weight: 800; font-size: 1.2rem; }
+
+        #fleet { background: var(--white); }
+        .fleet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+        }
+        .fleet-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--gray-light);
+            transition: all 0.4s;
+            border: 1px solid #eee;
+        }
+        .fleet-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
+        .fleet-image {
+            height: 220px;
+            background: #e0e7f0;
+            overflow: hidden;
+            position: relative;
+        }
+        .fleet-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .fleet-card:hover .fleet-image img { transform: scale(1.08); }
+        .fleet-info { padding: 24px; }
+        .fleet-info h3 { font-size: 1.2rem; margin-bottom: 6px; }
+        .fleet-info p { color: var(--gray); font-size: 0.9rem; line-height: 1.6; }
+        .fleet-specs {
+            display: flex; gap: 16px; margin-top: 12px; padding-top: 12px;
+            border-top: 1px solid #ddd;
+            font-size: 0.85rem; color: var(--gray);
+        }
+        .fleet-specs span { display: flex; align-items: center; gap: 4px; }
+        .fleet-price {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .testimonials { background: var(--primary); color: #fff; }
+        .testimonials .section-title h2 { color: #fff; }
+        .testimonials .section-title p { color: rgba(255,255,255,0.8); }
+        .testimonials .title-bar { background: var(--accent); }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+        }
+        .testimonial-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .testimonial-card .stars { color: var(--gold); font-size: 1.1rem; margin-bottom: 12px; }
+        .testimonial-card p { opacity: 0.9; font-size: 0.95rem; line-height: 1.7; }
+        .testimonial-card .author { margin-top: 16px; font-weight: 600; font-size: 0.9rem; opacity: 0.8; }
+
+        #contact { background: var(--gray-light); }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        .contact-info h3 { font-size: 1.5rem; margin-bottom: 8px; }
+        .contact-info .contact-desc { color: var(--gray); margin-bottom: 24px; }
+        .contact-item {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 18px;
+        }
+        .contact-item .icon {
+            width: 44px; height: 44px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .contact-item .icon.gold { background: var(--gold); }
+        .contact-item .icon.green { background: #07c160; }
+        .contact-item strong { display: block; font-size: 0.9rem; }
+        .contact-item span { color: var(--gray); font-size: 0.9rem; }
+        .contact-qr {
+            margin-top: 24px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px dashed #e0e0e0;
+        }
+        .contact-qr .qr-placeholder {
+            width: 160px; height: 160px;
+            margin: 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contact-qr .qr-placeholder img {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .contact-qr p { font-size: 0.9rem; color: var(--gray); }
+        .contact-form { display: flex; flex-direction: column; gap: 16px; }
+        .contact-form input,
+        .contact-form textarea,
+        .contact-form select {
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background: #fff;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus,
+        .contact-form select:focus { outline: none; border-color: var(--primary); }
+        .contact-form textarea { min-height: 100px; resize: vertical; }
+        .contact-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 50px 0 24px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+        footer h4 { color: #fff; font-size: 1rem; margin-bottom: 16px; }
+        footer p { font-size: 0.9rem; line-height: 1.8; }
+        footer .logo { color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        footer .logo .logo-icon { background: var(--accent); }
+        footer .logo span.sub { display: none; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { font-size: 0.9rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--accent); }
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 968px) {
+            .hero h1 { font-size: 2.6rem; }
+            .hero h1 .small { font-size: 1.1rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-stats { gap: 24px; flex-wrap: wrap; }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%; left: 0; right: 0;
+                background: #fff;
+                flex-direction: column;
+                padding: 20px;
+                gap: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: flex; }
+            .hero { min-height: auto; padding: 130px 0 70px; }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .hero-stats { margin-top: 30px; padding-top: 20px; gap: 20px; }
+            .hero-stat h3 { font-size: 1.5rem; }
+            .section-title h2 { font-size: 1.6rem; }
+            section { padding: 60px 0; }
+            .services-grid { grid-template-columns: 1fr; }
+            .fleet-grid { grid-template-columns: 1fr; }
+            .testimonial-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .contact-form .row { grid-template-columns: 1fr; }
+        }
+
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        .float-contact {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .float-contact a {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .float-contact a:hover { transform: scale(1.1); }
+        .float-contact .f-wx { background: #07c160; }
+        .float-contact .f-phone { background: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Header ===== -->
+    <header id="header">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="#" class="logo">
+                    <span class="logo-icon">T</span>
+                    <div>TRANSFRANCE <span class="sub">巴黎出行 · 欧洲导游</span></div>
+                </a>
+                <nav class="nav-links" id="navLinks">
+                    <a href="#services">服务项目</a>
+                    <a href="#fleet">我们的车队</a>
+                    <a href="#about">关于我们</a>
+                    <a href="#contact">联系我们</a>
+                    <a href="#contact" class="btn btn-primary">立即预约</a>
+                </nav>
+                <button class="hamburger" id="hamburger" aria-label="菜单">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+        <div class="hero-float">🗼</div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">🇫🇷 巴黎持证VTC · 中文司导</div>
+                <h1>
+                    来法国旅行<br>
+                    <span>找TRANSFRANCE</span>
+                    <span class="small">巴黎网约车 · 欧洲中文导游 · 一站式服务</span>
+                </h1>
+                <p>我们是您在法国的专属出行管家——提供巴黎及全法网约车接送、欧洲多国中文导游服务。华人团队，正规营运，让您的欧洲之旅安心又舒心。</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">📱 微信预约</a>
+                    <a href="#services" class="btn btn-outline">了解更多</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <h3>5000+</h3>
+                        <p>华人旅客服务</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>10+年</h3>
+                        <p>巴黎本地经验</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>中/法/英</h3>
+                        <p>三语服务</p>
+                    </div>
+                    <div class="hero-stat">
+                        <h3>⭐4.9</h3>
+                        <p>客户好评率</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Services ===== -->
+    <section id="services">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>我们的服务</h2>
+                <p>从巴黎出行到欧洲多国旅行，为您提供全方位的中文司导服务</p>
+                <div class="title-bar"></div>
+            </div>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-icon">🚗</div>
+                    <h3>巴黎网约车 / VTC</h3>
+                    <p>巴黎及大巴黎地区即时用车、预约用车。持证VTC专业司机，舒适车型，机场接送、商务出行、日常代步。</p>
+                    <span class="tag">随叫随到</span>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">✈️</div>
+                    <h3>机场接送</h3>
+                    <p>戴高乐CDG、奥利ORY、博韦BVA机场专车接送。举牌接机、准时送达，告别拖着行李赶地铁的烦恼。</p>
+                    <span class="tag">24小时服务</span>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon gold">🗺️</div>
+                    <h3>欧洲中文导游</h3>
+                    <p>法国、意大利、瑞士、德国等欧洲多国中文导游陪同。深度讲解、行程定制，带您发现欧洲之美。</p>
+                    <span class="tag">深度讲解</span>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">🏰</div>
+                    <h3>包车旅游</h3>
+                    <p>巴黎一日游、南法普罗旺斯、圣米歇尔山、卢瓦尔河谷城堡等精品路线。专属司导，自由灵活。</p>
+                    <span class="tag">线路定制</span>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon gold">🍷</div>
+                    <h3>酒庄·购物·商务</h3>
+                    <p>波尔多/勃艮第酒庄之旅、巴黎购物VIP陪同、商务考察接待。高品质出行，彰显尊贵体验。</p>
+                    <span class="tag">VIP服务</span>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-icon">🚐</div>
+                    <h3>团体出行</h3>
+                    <p>家庭出游、朋友结伴、商务团组。7-9座商务车，满足3-8人团体出行需求，人均更划算。</p>
+                    <span class="tag">家庭/团体</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Fleet ===== -->
+    <section id="fleet">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>我们的车队</h2>
+                <p>精选舒适车型，满足不同出行需求</p>
+                <div class="title-bar"></div>
+            </div>
+            <div class="fleet-grid">
+                <div class="fleet-card fade-in">
+                    <div class="fleet-image">
+                        <img src="https://images.unsplash.com/photo-1544567430-6b7131655bb1?auto=format&fit=crop&w=800&q=80" alt="黑色奔驰轿车" loading="lazy">
+                    </div>
+                    <div class="fleet-info">
+                        <h3>舒适轿车</h3>
+                        <p>黑色奔驰高端轿车，适合1-3人出行，商旅皆宜</p>
+                        <div class="fleet-specs">
+                            <span>👤 1-3 人</span>
+                            <span>🧳 2-3 件行李</span>
+                        </div>
+                        <div class="fleet-price">推荐：机场接送 / 巴黎市内</div>
+                    </div>
+                </div>
+                <div class="fleet-card fade-in">
+                    <div class="fleet-image">
+                        <img src="https://images.unsplash.com/photo-1765461734605-34657fa04db2?auto=format&fit=crop&w=800&q=80" alt="黑色奔驰商务车" loading="lazy">
+                    </div>
+                    <div class="fleet-info">
+                        <h3>豪华商务车</h3>
+                        <p>黑色奔驰豪华商务车，7-9座，家庭出游首选</p>
+                        <div class="fleet-specs">
+                            <span>👤 4-7 人</span>
+                            <span>🧳 4-6 件行李</span>
+                        </div>
+                        <div class="fleet-price">推荐：家庭出游 / 团体旅行</div>
+                    </div>
+                </div>
+                <div class="fleet-card fade-in">
+                    <div class="fleet-image">
+                        <img src="https://images.unsplash.com/photo-1699298784295-d542673bab22?auto=format&fit=crop&w=800&q=80" alt="黑色奔驰SUV" loading="lazy">
+                    </div>
+                    <div class="fleet-info">
+                        <h3>奔驰SUV</h3>
+                        <p>黑色奔驰SUV，空间宽敞，乘坐舒适，适合长途旅行</p>
+                        <div class="fleet-specs">
+                            <span>👤 1-4 人</span>
+                            <span>🧳 3-4 件行李</span>
+                        </div>
+                        <div class="fleet-price">推荐：跨城 / 长途旅行</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Testimonials ===== -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>客户好评</h2>
+                <p>来自同胞们的真实评价</p>
+                <div class="title-bar"></div>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <p>"司机师傅非常专业，提前到机场举牌等我们，一路上介绍了巴黎的景点和美食，孩子爷爷奶奶特别开心。强烈推荐！"</p>
+                    <div class="author">—— 王女士 · 家庭游 · 2025年10月</div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <p>"包车去圣米歇尔山，中文导游讲解非常详细，行程安排也很合理。比跟大团舒服太多了，下次南法还找你们！"</p>
+                    <div class="author">—— 张先生 · 包车旅游 · 2025年8月</div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <p>"在巴黎转机只有半天时间，订了接送机+市区半日游，效率很高，卢浮宫和铁塔都看到了。对于不会法语的游客太友好了。"</p>
+                    <div class="author">—— 李同学 · 转机半日游 · 2025年12月</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image fade-in">
+                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80" alt="巴黎埃菲尔铁塔" loading="lazy">
+                    <div class="about-badge">
+                        <strong>TRANSFRANCE</strong>
+                        巴黎 · 始于2015
+                    </div>
+                </div>
+                <div class="about-content fade-in">
+                    <h2>关于 <span>TRANSFRANCE</span></h2>
+                    <p>TRANSFRANCE 成立于2015年，总部位于巴黎 Villejuif，是一家由华人团队运营的综合性出行服务公司。我们持有法国正规VTC营运资质，拥有多年服务华人旅客的丰富经验。</p>
+                    <p>我们深知同胞们初到异国他乡的不便——语言不通、交通不熟、担心被坑。所以我们始终坚持：<strong>透明报价、优质服务、华人情怀</strong>。每位司机和导游都经过严格筛选，熟悉欧洲各地人文历史，用流利的中文为您提供有温度的陪伴。</p>
+                    <div class="about-features">
+                        <div class="about-feature"><span class="check">✓</span> 法国正规VTC营运资质，持证上岗</div>
+                        <div class="about-feature"><span class="check">✓</span> 全程中文沟通，无障碍交流</div>
+                        <div class="about-feature"><span class="check">✓</span> 透明价格，无隐形消费</div>
+                        <div class="about-feature"><span class="check">✓</span> 微信/电话即时响应，24小时客服</div>
+                    </div>
+                    <br>
+                    <a href="#contact" class="btn btn-primary">📱 加微信预约</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Contact ===== -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>联系我们</h2>
+                <p>来法国前加个微信，出行无忧</p>
+                <div class="title-bar"></div>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info fade-in">
+                    <h3>联系方式</h3>
+                    <p class="contact-desc">欢迎来电或添加微信，24小时内回复</p>
+                    <div class="contact-item">
+                        <div class="icon green">💬</div>
+                        <div>
+                            <strong>微信 / WeChat</strong>
+                            <span>richarddrx</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon">📞</div>
+                        <div>
+                            <strong>法国电话</strong>
+                            <span>0033 6 63 07 77 11</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon">📍</div>
+                        <div>
+                            <strong>公司地址</strong>
+                            <span>143 boulevard Maxime Gorki, 94800 Villejuif, France</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon">✉️</div>
+                        <div>
+                            <strong>电子邮箱</strong>
+                            <span>transfrancevillejuif@gmail.com</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon gold">🕐</div>
+                        <div>
+                            <strong>服务时间</strong>
+                            <span>巴黎时间 7:00 - 23:00（全年无休）</span>
+                        </div>
+                    </div>
+                    <div class="contact-qr">
+                        <strong>📱 扫码加微信</strong>
+                        <div class="qr-placeholder">
+                            <img src="wechat-qr.jpg" alt="微信二维码">
+                        </div>
+                        <p>国内同胞扫码直接加微信<br>微信：richarddrx</p>
+                    </div>
+                </div>
+                <form class="contact-form fade-in" id="contactForm">
+                    <h3 style="font-size:1.2rem;">📝 预约咨询</h3>
+                    <p style="color:var(--gray);font-size:0.9rem;margin-top:-8px;">告诉我们您的需求，我们会尽快联系您</p>
+                    <div class="row">
+                        <input type="text" placeholder="您的姓名" required>
+                        <input type="tel" placeholder="微信号 / 手机号" required>
+                    </div>
+                    <input type="text" placeholder="到达日期（如：2026年6月15日）">
+                    <select>
+                        <option value="">选择服务类型</option>
+                        <option>巴黎网约车 / VTC</option>
+                        <option>机场接送</option>
+                        <option>中文导游</option>
+                        <option>包车旅游</option>
+                        <option>酒庄/购物VIP</option>
+                        <option>团体出行</option>
+                        <option>其他咨询</option>
+                    </select>
+                    <textarea placeholder="请描述您的行程计划和人数的需求..."></textarea>
+                    <button type="submit" class="btn btn-primary" style="align-self: flex-start;">📩 提交预约</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="#" class="logo">
+                        <span class="logo-icon">T</span>
+                        TRANSFRANCE
+                    </a>
+                    <p>法国巴黎持证VTC出行服务商，提供巴黎网约车、机场接送、欧洲中文导游、包车旅游等服务。华人团队，用心服务每位同胞。</p>
+                </div>
+                <div>
+                    <h4>快速导航</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">服务项目</a></li>
+                        <li><a href="#fleet">我们的车队</a></li>
+                        <li><a href="#about">关于我们</a></li>
+                        <li><a href="#contact">联系我们</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>服务项目</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">巴黎网约车</a></li>
+                        <li><a href="#services">机场接送</a></li>
+                        <li><a href="#services">中文导游</a></li>
+                        <li><a href="#services">包车旅游</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系渠道</h4>
+                    <ul class="footer-links">
+                        <li><a href="tel:0033663077711">0033 6 63 07 77 11</a></li>
+                        <li><a href="#">微信：richarddrx</a></li>
+                        <li><a href="mailto:transfrancevillejuif@gmail.com">发送邮件</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 TRANSFRANCE. Tous droits réservés. | 法国巴黎 · 华人出行服务
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== Floating Contact ===== -->
+    <div class="float-contact">
+        <a href="tel:0033663077711" class="f-phone" title="电话预约">📞</a>
+        <a href="#" class="f-wx" title="微信咨询">💬</a>
+    </div>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('.fleet-image').forEach((container, index) => {
+            const img = container.querySelector('img');
+            const saved = localStorage.getItem('fleet_img_' + index);
+            if (saved) img.src = saved;
+
+            const btn = document.createElement('button');
+            btn.textContent = '📷 换图';
+            btn.style.cssText = 'position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:0.8rem;cursor:pointer;opacity:0;transition:opacity 0.3s;';
+            container.style.position = 'relative';
+            container.appendChild(btn);
+
+            container.addEventListener('mouseenter', () => btn.style.opacity = '1');
+            container.addEventListener('mouseleave', () => btn.style.opacity = '0');
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        img.src = e.target.result;
+                        localStorage.setItem('fleet_img_' + index, e.target.result);
+                        btn.textContent = '✅ 已换';
+                        setTimeout(() => { btn.textContent = '📷 换图'; }, 2000);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            container.appendChild(fileInput);
+        });
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const original = btn.textContent;
+            btn.textContent = '✓ 已收到，我们将尽快联系您！';
+            btn.style.background = '#07c160';
+            setTimeout(() => {
+                btn.textContent = original;
+                btn.style.background = '';
+                this.reset();
+            }, 3000);
+        });
+    </script>
+
+</body>
+</html>
